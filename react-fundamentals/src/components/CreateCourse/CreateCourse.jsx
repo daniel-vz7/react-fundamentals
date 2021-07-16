@@ -3,98 +3,168 @@ import Button from "../Button/Button";
 import Input from "../Input/Input";
 import CreateAuthor from "../CreateAuthor/CreateAuthor";
 import ConvertDuration from "../ConvertDuration/ConvertDuration";
+import Grid from '@material-ui/core/Grid';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Typography from '@material-ui/core/Typography';
 
-function CreateCourse({ authorsList, updateAuthors }) {
+function CreateCourse({ authorsList, updateAuthors, updateCourses, updateMode }) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [authors, setAuthors] = useState([]);
-  const [time, setTime] = useState(null);
+  const [time, setTime] = useState(0);
 
-  const handleAdd = (newAuthor) => {
-    updateAuthors((prevAuthors) => {
-      return [...prevAuthors, {
-        id: new Date().getTime(),
-        name: newAuthor,
-      }];
-    });
+  const handleAddAuthor = (newAuthor) => {
+    if (newAuthor.length >= 2) {
+      updateAuthors((prevAuthors) => {
+        return [...prevAuthors, {
+          id: new Date().getTime(),
+          name: newAuthor,
+        }];
+      });
+    }
+  }
+
+  const handleAddCourse = () => {
+    if (title !== '' && description.length >= 2 && authors.length && time > 0) {
+      updateCourses((prevCourses) => {
+        return [...prevCourses,   {
+          id: new Date().getTime(),
+          title: title,
+          description: description,
+          creationDate: '10/11/2020',
+          duration: time,
+          authors: authors.map(author => author.id),
+        }];
+      }, updateMode(prevMode => 'default') );
+    } else {
+      alert('Please, fill all fields');
+    }
   }
 
   return (
-    <div className="course-create">
-      <div className="course-create_header">
-        <div>
-          <p>Title</p>
+    <Grid container item xs={11}>
+      <Grid container item alignItems="flex-end" xs={12} justifyContent="space-between" className="mb-3">
+        <Grid item>
+          <Typography>
+            Title
+          </Typography>
           <Input value={title} placeholder="Enter title..." onChange={setTitle}/>
-        </div>
-        <div>
-          <Button title="Create course"/>
-        </div>
-      </div>
-      <div className="course-create_description">
-        <div>
-          <p>Description</p>
-          <textarea
-            value={description}
-            placeholder="Enter description"
-            onChange={event => {
-              event.persist();
-              setDescription(event.target.value);
-            }}></textarea>
-        </div>
-      </div>
+        </Grid>
+        <Grid item>
+          <Button
+            title="Create course"
+            onClick={handleAddCourse}
+            />
+        </Grid>
+      </Grid>
 
+      <Grid item xs={12} className="mb-3">
+        <Typography>
+          Description
+        </Typography>
+        <TextareaAutosize
+          value={description}
+          placeholder="Enter description"
+          minRows={5}
+          className="textarea"
+          onChange={event => {
+            event.persist();
+            setDescription(event.target.value);
+          }}></TextareaAutosize>
+      </Grid>
 
-      <div className="course-authors">
-        <CreateAuthor handleAdd={handleAdd}/>
+      <Grid container item justifyContent="space-between" xs={12}>
 
-        <div className="course-create_add-authors">
-          <h4>Authors</h4>
-          {authorsList.map(author => {
-            return (
-              <div className="add-authors_item">
-                <p>{author.name}</p>
-                <Button
-                  title="Add author"
-                  onClick={() => {
-                    setAuthors(prev => {
-                      return [...prev, author]
-                    });
-                  }}
-                  />
-              </div>
-            )
-          })}
-        </div>
+        <Grid container direction="column" item xs={5} className="mb-2">
+          <Grid container item justifyContent="center" className="mb-3">
+            <Typography variant="h6">
+              Add author
+            </Typography>
+          </Grid>
+          <CreateAuthor handleAdd={handleAddAuthor}/>
+        </Grid>
 
-        <ConvertDuration
-          minutes={time}
-          onChange={value => {
-            console.log('sup there');
-            console.log(value);
-            setTime(value);
-          }}
+        <Grid container item direction="column" justifyContent="center" xs={5} className="mb-2">
+          <Grid container item justifyContent="center" className="mb-3">
+            <Typography variant="h6">
+              Authors
+            </Typography>
+          </Grid>
+          <Grid container item justifyContent="center">
+            {authorsList.map(author => {
+              return (
+                <Grid container justifyContent="space-between">
+                  <Grid item xs={6}>
+                    <Typography>
+                      {author.name}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      title="Add author"
+                      onClick={() => {
+                        setAuthors(prev => {
+                          return [...prev, author]
+                        });
+                      }}
+                      />
+                  </Grid>
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Grid>
+
+        <Grid container direction="column" item xs={5} className="mb-2">
+          <Grid container item justifyContent="center" className="mb-3">
+            <Typography variant="h6">
+              Duration
+            </Typography>
+          </Grid>
+          <ConvertDuration
+            minutes={time}
+            onChange={value => {
+              //console.log('sup there');
+              //console.log(value);
+              setTime(value);
+            }}
           />
+        </Grid>
 
-        <div className="course-authors_list">
-          {authors.map(author => {
-            return (
-              <div className="authors_item">
-                <p>{author.name}</p>
-                <Button
-                  title="Remove author"
-                  onClick={() => {
-                    /*setAuthors(prev => {
-                      return [...prev, author]
-                    });*/
-                  }}
-                  />
-              </div>
-            )
-          })}
-        </div>
-      </div>
-
-    </div>
+        <Grid container item direction="column" justifyContent="center" xs={5} className="mb-2">
+          <Grid container item justifyContent="center" className="mb-3">
+            <Typography variant="h6">
+              Course authors
+            </Typography>
+          </Grid>
+          <Grid container item justifyContent="center">
+            {authors.map(author => {
+              return (
+                <Grid container justifyContent="space-between">
+                  <Grid item xs={6}>
+                    <Typography>
+                      {author.name}
+                    </Typography>
+                  </Grid>
+                  <Grid item xs={6}>
+                    <Button
+                      title="Remove author"
+                      onClick={() => {
+                        setAuthors(prev => {
+                          return prev.filter(({ id }) => {
+                            return author.id !== id;
+                          });
+                        });
+                      }}
+                      />
+                  </Grid>
+                </Grid>
+              )
+            })}
+          </Grid>
+        </Grid>
+      </Grid>
+    </Grid>
   );
 }
 

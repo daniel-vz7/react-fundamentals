@@ -3,7 +3,7 @@ import CourseCard from "../CourseCard/CourseCard";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 
-function Courses({ coursesList, authors }) {
+function Courses({ coursesList, authors, updateMode }) {
   const [searchValue, setSearchValue] = useState('');
   if (searchValue.trim() !== '') {
     coursesList = coursesList.filter(course => {
@@ -20,7 +20,7 @@ function Courses({ coursesList, authors }) {
           <Button title="Search"/>
         </div>
         <div className="add-course_button">
-          <Button title="Add new course"/>
+          <Button onClick={() => updateMode('create')} title="Add new course"/>
         </div>
       </div>
       <div className="courses-list">

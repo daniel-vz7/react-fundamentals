@@ -1,6 +1,8 @@
-import { useState } from "react";
+//import { useState } from "react";
 //import moment from 'react-moment';
 import Input from "../Input/Input";
+import Grid from "@material-ui/core/Grid";
+import Typography from "@material-ui/core/Typography";
 
 function ConvertDuration(props) {
   const { minutes, onChange } = props;
@@ -14,11 +16,23 @@ function ConvertDuration(props) {
   //const hours = moment(new Date()).minutes(minutes);
   //console.log(hours);
   return (
-    <div>
-      <p>Duration</p>
-      <Input placeholder="Enter duration in minutes..." type="number" onChange={(value) => onChange(value)} value={minutes}/>
-      <h5>Duration: 0:00 hours</h5>
-    </div>
+    <Grid container direction="column" justifyContent="center">
+      <Grid container item flex="colum" className="mb-3">
+        <Grid item xs={12}>
+          <Typography>
+            Duration
+          </Typography>
+        </Grid>
+        <Grid item xs={12}>
+          <Input fullWidth={true} placeholder="Enter duration in minutes..." type="number" onChange={(value) => onChange(value)} value={minutes}/>
+        </Grid>
+      </Grid>
+      <Grid container item>
+        <Typography variant="h5">
+          Duration: 0:00 hours
+        </Typography>
+      </Grid>
+    </Grid>
   );
 }
 

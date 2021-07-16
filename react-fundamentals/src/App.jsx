@@ -3,6 +3,7 @@ import './App.css';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
 import CreateCourse from './components/CreateCourse/CreateCourse';
+import Grid from '@material-ui/core/Grid';
 
 const mockedAuthorsList = [
   {
@@ -58,17 +59,19 @@ const mockedCoursesList = [
 ]
 
 function App() {
-  const [coursesList] = useState(mockedCoursesList);
+  const [coursesList, setCoursesList] = useState(mockedCoursesList);
   const [authorsList, setAuthorsList] = useState(mockedAuthorsList);
+  const [mode, setMode] = useState('default'); // default | create
   return (
-    <div className="app">
+    <Grid container justifyContent="center">
       <Header/>
-      {
-        /*<Courses coursesList={coursesList} authors={mockedAuthorsList}/>*/
-      }
-      
-      <CreateCourse authorsList={authorsList} updateAuthors={setAuthorsList}/>
-    </div>
+      {mode === 'default' && (
+        <Courses coursesList={coursesList} authors={mockedAuthorsList} updateMode={setMode}/>
+      )}
+      {mode === 'create' && (
+        <CreateCourse authorsList={authorsList} updateAuthors={setAuthorsList} updateCourses={setCoursesList} updateMode={setMode}/>
+      )}
+    </Grid>
   );
 }
 

@@ -1,14 +1,14 @@
-function Input({ value, placeholder, onChange, type = 'text' }) {
+function Input({ value, placeholder, onChange, type = 'text', fullWidth = false }) {
   const handleChange = (event) => {
     event.persist();
-    const value = parseInt(event.target.value);
+    const value = event.target.value;
     onChange(value);
   }
   return (
     <input
       placeholder={placeholder}
       type={type}
-      className="input"
+      className={`input ${fullWidth ? 'full-width' : ''}`}
       onChange={handleChange}
       value={value}
       />
