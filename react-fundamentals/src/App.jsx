@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import './App.css';
 import Header from './components/Header/Header';
 import Courses from './components/Courses/Courses';
+import CreateCourse from './components/CreateCourse/CreateCourse';
 
 const mockedAuthorsList = [
   {
@@ -58,10 +59,15 @@ const mockedCoursesList = [
 
 function App() {
   const [coursesList] = useState(mockedCoursesList);
+  const [authorsList, setAuthorsList] = useState(mockedAuthorsList);
   return (
     <div className="app">
       <Header/>
-      <Courses coursesList={coursesList} authors={mockedAuthorsList}/>
+      {
+        /*<Courses coursesList={coursesList} authors={mockedAuthorsList}/>*/
+      }
+      
+      <CreateCourse authorsList={authorsList} updateAuthors={setAuthorsList}/>
     </div>
   );
 }

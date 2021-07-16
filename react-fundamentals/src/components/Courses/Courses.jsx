@@ -6,8 +6,10 @@ import Input from "../Input/Input";
 function Courses({ coursesList, authors }) {
   const [searchValue, setSearchValue] = useState('');
   if (searchValue.trim() !== '') {
-    console.log('should query now');
-    console.log(coursesList);
+    coursesList = coursesList.filter(course => {
+      let regex = new RegExp(`${searchValue.trim()}`, 'i')
+      return course.title.match(regex) || course.id.match(regex);
+    })
   }
 
   return (

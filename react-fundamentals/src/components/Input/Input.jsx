@@ -1,10 +1,17 @@
-function Input({ value, placeholder, onChange }) {
+function Input({ value, placeholder, onChange, type = 'text' }) {
   const handleChange = (event) => {
     event.persist();
-    onChange(event.target.value);
+    const value = parseInt(event.target.value);
+    onChange(value);
   }
   return (
-    <input placeholder={placeholder} type="text" className="input" onChange={handleChange} value={value}/>
+    <input
+      placeholder={placeholder}
+      type={type}
+      className="input"
+      onChange={handleChange}
+      value={value}
+      />
   );
 }
 
