@@ -1,5 +1,5 @@
 //import { useState } from "react";
-//import moment from 'react-moment';
+import moment from 'moment';
 import Input from "../Input/Input";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
@@ -13,8 +13,9 @@ function ConvertDuration(props) {
   }*/
   //const [minutes, setMinutes] = useState();
 
-  //const hours = moment(new Date()).minutes(minutes);
-  //console.log(hours);
+  const hours = moment(new Date());//.minutes(minutes);
+  console.log(hours);
+  
   return (
     <Grid container direction="column" justifyContent="center">
       <Grid container item flex="colum" className="mb-3">

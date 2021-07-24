@@ -62,6 +62,7 @@ function App() {
   const [coursesList, setCoursesList] = useState(mockedCoursesList);
   const [authorsList, setAuthorsList] = useState(mockedAuthorsList);
   const [mode, setMode] = useState('default'); // default | create
+  
   return (
     <Grid container justifyContent="center">
       <Header/>
