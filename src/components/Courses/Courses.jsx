@@ -1,18 +1,61 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useHistory } from "react-router";
+import axios from "axios";
 import CourseCard from "../CourseCard/CourseCard";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 
-function Courses({ coursesList, authors, updateMode }) {
+function Courses() {
+  let history = useHistory();
+  let [coursesList, setCoursesList] = useState([]);
+  const [authorsList, setAuthorsList] = useState([]);
   const [searchValue, setSearchValue] = useState('');
+
   if (searchValue.trim() !== '') {
     coursesList = coursesList.filter(course => {
       let regex = new RegExp(`${searchValue.trim()}`, 'i')
       return course.title.match(regex) || course.id.match(regex);
     })
   }
+  
+  useEffect(() => {
+    const fetchData = async () => {
+      const authors = await getAuthors();
+      const courses = await getCourses();
+      setAuthorsList(authors);
+      setCoursesList(courses);
+    }
+    fetchData();
+  }, []);
 
-  //TODO load data
+  const getCourses = async () => {
+    try {
+      return (await axios({
+        method: "get",
+        url: "http://localhost:3000/courses/all",
+      })).data.result;
+    } catch (error) {
+      return {
+        successful: false,
+        message: error.message
+      }
+    }
+  }
+
+  const getAuthors = async () => {
+    try {
+      return (await axios({
+        method: "get",
+        url: "http://localhost:3000/authors/all",
+      })).data.result;
+    } catch (error) {
+      return {
+        successful: false,
+        message: error.message
+      }
+    }
+  }
+  //TODO create search component
 
   return (
     <div className="courses">
@@ -22,16 +65,22 @@ function Courses({ coursesList, authors, updateMode }) {
           <Button title="Search"/>
         </div>
         <div className="add-course_button">
-          <Button onClick={() => updateMode('create')} title="Add new course"/>
+          <Button
+            onClick={() => {
+              history.push('/courses/add')
+            }}
+            title="Add new course"
+            />
         </div>
       </div>
       <div className="courses-list">
         {coursesList.map((course) => (
           <CourseCard
+            id={course.id}
             title={course.title}
             description={course.description}
             authors={course.authors.map(author => {
-              for (const _author of authors) {
+              for (const _author of authorsList) {
                 if (_author.id === author) {
                   return _author.name;
                 }

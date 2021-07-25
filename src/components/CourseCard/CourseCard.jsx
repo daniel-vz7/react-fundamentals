@@ -1,6 +1,10 @@
-import Button from "../Button/Button";
+import React from "react";
+import { useHistory } from "react-router";
+import Button from "@material-ui/core/Button";
 
-function Courses({ title, description, authors, duration, createdAt }) {
+function Courses({ id, title, description, authors, duration, createdAt }) {
+  let history = useHistory();
+  
   return (
     <div className="course-card">
       <div className="course-card_main">
@@ -21,7 +25,13 @@ function Courses({ title, description, authors, duration, createdAt }) {
           <span>{createdAt}</span>
         </div>
         <div className="course-card_show">
-          <Button title="Show course"/>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => {
+              history.push(`/courses/${id}`);
+            }}
+            >Show course</Button>
         </div>
       </div>
     </div>

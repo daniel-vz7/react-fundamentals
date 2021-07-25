@@ -8,7 +8,7 @@ function App() {
   return (
     <Grid container justifyContent="center">
       <Header/>
-      <Grid container className="main">
+      <Grid container justifyContent="center">
         <Main/>
       </Grid>
     </Grid>

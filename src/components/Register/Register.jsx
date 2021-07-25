@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import axios from "axios";
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
@@ -9,28 +9,28 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 function Login() {
+  let history = useHistory();
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const register = (nameRegister, emailRegister, passwordRegister) => {
-    axios({
-      method: "post",
-      url: "http://localhost:3000/register",
-      data: {
-        name: nameRegister,
-        email: emailRegister,
-        password: passwordRegister,
+  const register = async (nameRegister, emailRegister, passwordRegister) => {
+    try {
+      return (await axios({
+        method: "post",
+        url: "http://localhost:3000/register",
+        data: {
+          name: nameRegister,
+          email: emailRegister,
+          password: passwordRegister,
+        }
+      })).data;
+    } catch (error) {
+      return {
+        successful: false,
+        message: error.message
       }
-    })
-    .then(response => {
-      console.log('response');
-      console.log(response);
-    })
-    .catch(error => {
-      console.log('error');
-      console.log(error);
-    });
+    }
   }
 
   return (
@@ -46,7 +46,10 @@ function Login() {
           <Grid item>
             <form onSubmit={async event => {
                 event.preventDefault();
-                register(name, email, password);
+                const results = await register(name, email, password);
+                if (results.successful) {
+                  history.push('/login');
+                }
               }}>
               <Grid>
                 <TextField

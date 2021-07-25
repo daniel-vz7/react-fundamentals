@@ -1,43 +1,92 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useHistory } from "react-router";
+import axios from "axios";
+import Grid from '@material-ui/core/Grid';
+import TextareaAutosize from '@material-ui/core/TextareaAutosize';
+import Typography from '@material-ui/core/Typography';
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import CreateAuthor from "../CreateAuthor/CreateAuthor";
 import ConvertDuration from "../ConvertDuration/ConvertDuration";
-import Grid from '@material-ui/core/Grid';
-import TextareaAutosize from '@material-ui/core/TextareaAutosize';
-import Typography from '@material-ui/core/Typography';
 
-function CreateCourse({ authorsList, updateAuthors, updateCourses, updateMode }) {
+const CreateCourse = () => {
+  let history = useHistory();
+  const [authorsList, setAuthorsList] = useState([]);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [authors, setAuthors] = useState([]);
   const [time, setTime] = useState(0);
 
-  const handleAddAuthor = (newAuthor) => {
+  useEffect(() => {
+    const fetchData = async () => {
+      const authorsData = await getAuthors();
+      setAuthorsList(authorsData);
+    }
+    fetchData();
+  }, []);
+
+  const addAuthor = async (newAuthor) => {
     if (newAuthor.length >= 2) {
-      updateAuthors((prevAuthors) => {
-        return [...prevAuthors, {
-          id: new Date().getTime(),
-          name: newAuthor,
-        }];
-      });
+      try {
+        return (await axios({
+          method: "post",
+          url: "http://localhost:3000/authors/add",
+          data: {
+            name: newAuthor
+          },
+          headers: {
+            Authorization: window.localStorage.getItem('auth'),
+          }
+        })).data;
+      } catch (error) {
+        return {
+          successful: false,
+          message: error.message
+        }
+      }
     }
   }
 
-  const handleAddCourse = () => {
+  const addCourse = async () => {
     if (title !== '' && description.length >= 2 && authors.length && time > 0) {
-      updateCourses((prevCourses) => {
-        return [...prevCourses,   {
-          id: new Date().getTime(),
-          title: title,
-          description: description,
-          creationDate: '10/11/2020',
-          duration: time,
-          authors: authors.map(author => author.id),
-        }];
-      }, updateMode(prevMode => 'default') );
+      try {
+        return (await axios({
+          method: "post",
+          url: "http://localhost:3000/courses/add",
+          data: {
+            title: title,
+            description: description,
+            duration: parseInt(time),
+            authors: authors.map(author => {
+              return author.id;
+            })
+          },
+          headers: {
+            Authorization: window.localStorage.getItem('auth'),
+          }
+        })).data;
+      } catch (error) {
+        return {
+          successful: false,
+          message: error.message
+        }
+      }
     } else {
       alert('Please, fill all fields');
+    }
+  }
+
+  const getAuthors = async () => {
+    try {
+      return (await axios({
+        method: "get",
+        url: "http://localhost:3000/authors/all",
+      })).data.result;
+    } catch (error) {
+      return {
+        successful: false,
+        message: error.message
+      }
     }
   }
 
@@ -53,7 +102,10 @@ function CreateCourse({ authorsList, updateAuthors, updateCourses, updateMode })
         <Grid item>
           <Button
             title="Create course"
-            onClick={handleAddCourse}
+            onClick={async () => {
+              const addData = await addCourse();
+              if (addData.successful) history.push('/courses');
+            }}
             />
         </Grid>
       </Grid>
@@ -81,7 +133,11 @@ function CreateCourse({ authorsList, updateAuthors, updateCourses, updateMode })
               Add author
             </Typography>
           </Grid>
-          <CreateAuthor handleAdd={handleAddAuthor}/>
+          <CreateAuthor handleAdd={async name => {
+            await addAuthor(name);
+            const authorsData = await getAuthors();
+            setAuthorsList(authorsData);
+          }}/>
         </Grid>
 
         <Grid container item direction="column" justifyContent="center" xs={5} className="mb-2">

@@ -14,7 +14,6 @@ function ConvertDuration(props) {
   //const [minutes, setMinutes] = useState();
 
   const hours = moment(new Date());//.minutes(minutes);
-  console.log(hours);
   
   return (
     <Grid container direction="column" justifyContent="center">

@@ -9,27 +9,26 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 
 function Login() {
+  let history = useHistory();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  let history = useHistory();
 
-  const login = (emailLogin, passwordLogin) => {
-    axios({
-      method: "post",
-      url: "http://localhost:3000/login",
-      data: {
-        email: emailLogin,
-        password: passwordLogin,
+  const login = async (emailLogin, passwordLogin) => {
+    try {
+      return (await axios({
+        method: "post",
+        url: "http://localhost:3000/login",
+        data: {
+          email: emailLogin,
+          password: passwordLogin,
+        }
+      })).data;
+    } catch (error) {
+      return {
+        successful: false,
+        message: error.message
       }
-    })
-    .then(response => {
-      //TODO save token in localstorage
-      history.push('/courses');
-    })
-    .catch(error => {
-      console.log('error');
-      console.log(error);
-    });
+    }
   }
 
   return (
@@ -45,7 +44,11 @@ function Login() {
           <Grid item>
             <form onSubmit={async event => {
                 event.preventDefault();
-                login(email, password);
+                const data = await login(email, password);
+                if (data.successful) {
+                  window.localStorage.setItem('auth', data.result)
+                  history.push('/courses');
+                }
               }}>
               <Grid>
                 <TextField

@@ -1,8 +1,8 @@
+import Typography from "@material-ui/core/Typography";
+
 function Logo() {
   return (
-    <div className="Logo">
-      <h3>Courses App</h3>
-    </div>
+    <Typography variant="h4">Courses App</Typography>
   );
 }
 
