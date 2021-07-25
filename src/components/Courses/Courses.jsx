@@ -12,6 +12,8 @@ function Courses({ coursesList, authors, updateMode }) {
     })
   }
 
+  //TODO load data
+
   return (
     <div className="courses">
       <div className="courses-header">
